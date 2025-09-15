@@ -1,69 +1,230 @@
 <!doctype html>
-<details>
-<summary data-i18n="q2">CSV でエクスポートできますか？</summary>
-<div class="muted" data-i18n="a2">対応予定（例）。メール/ファイル出力の可否を記載。</div>
-</details>
-</section>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PointLog — テニスの試合記録 & 分析</title>
+  <meta name="description" content="PointLog は、テニスのスコアを素早く記録し、ショット傾向や得点パターンを見える化する iOS アプリです。" />
+  <meta name="theme-color" content="#111827" />
+  <link rel="canonical" href="https://daichi-kashimoto.github.io/PointLog/" />
+  <link rel="icon" href="assets/img/icon.png" sizes="any" />
 
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="PointLog — Tennis Match Tracker & Analytics" />
+  <meta property="og:description" content="Score faster. See patterns. Win smarter." />
+  <meta property="og:url" content="https://daichi-kashimoto.github.io/PointLog/" />
+  <meta property="og:image" content="https://daichi-kashimoto.github.io/PointLog/assets/img/og-image.png" />
 
-<footer>
-<div>© <span id="year"></span> PointLog</div>
-<div class="tiny">This page is hosted on GitHub Pages.</div>
-</footer>
-</div>
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PointLog — Tennis Match Tracker & Analytics" />
+  <meta name="twitter:description" content="Score faster. See patterns. Win smarter." />
+  <meta name="twitter:image" content="https://daichi-kashimoto.github.io/PointLog/assets/img/og-image.png" />
 
+  <!-- 構造化データ（ダミー価格/URLは後で更新） -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MobileApplication",
+    "name": "PointLog",
+    "applicationCategory": "SportsApplication",
+    "operatingSystem": "iOS",
+    "inLanguage": ["ja", "en"],
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+  }
+  </script>
 
-<script>
-// 年表示
-document.getElementById('year').textContent = new Date().getFullYear();
+  <style>
+    :root { --bg:#0b1020; --fg:#e5e7eb; --muted:#9ca3af; --accent:#06b6d4; --card:#0f172a; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;line-height:1.6;color:var(--fg);background:radial-gradient(1200px 800px at 70% -10%,#14305122,transparent),var(--bg)}
+    a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+    .wrap{max-width:980px;margin:0 auto;padding:20px}
+    header{display:flex;align-items:center;gap:16px;padding:16px 0}
+    header img{width:72px;height:72px;border-radius:16px;box-shadow:0 10px 30px #0006;background:#0b1222;border:1px solid #1f2636}
+    .title{display:flex;flex-direction:column}
+    .title h1{margin:0;font-size:28px}
+    .title .sub{color:var(--muted)}
+    .lang{margin-left:auto;display:flex;gap:8px}
+    .lang button{background:#111827;color:#e5e7eb;border:1px solid #2c3445;border-radius:10px;padding:6px 10px;cursor:pointer}
+    .lang button.active{border-color:var(--accent)}
+    .hero{display:grid;grid-template-columns:1.1fr 0.9fr;gap:24px;align-items:center;margin:12px 0 28px}
+    @media (max-width:860px){ .hero{grid-template-columns:1fr} }
+    .hero .lead{font-size:18px;color:#d1d5db}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .btn{display:inline-flex;align-items:center;gap:8px;background:#111827;border:1px solid #334155;color:#e5e7eb;padding:10px 14px;border-radius:12px}
+    .btn strong{font-weight:700}
+    .card{background:linear-gradient(180deg,#10172a 0%,#0b1222 100%);border:1px solid #1f2937;border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 8px 30px #0006}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    @media (max-width:860px){ .grid{grid-template-columns:1fr} }
+    .card h3{margin:0 0 10px;font-size:18px}
+    .muted{color:var(--muted)}
+    .shots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .shots img{width:100%;aspect-ratio:9/19;border-radius:12px;border:1px solid #273244;object-fit:cover;background:#0b1222}
+    footer{margin:40px 0 10px;color:#9aa2b3;font-size:14px}
+    .tiny{font-size:12px;color:#8b93a5}
+    .placeholder{display:grid;place-items:center;height:100%;border-radius:12px;border:1px dashed #2a3347;padding:12px;color:#8aa9b6}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <img src="assets/img/icon.png" alt="PointLog app icon" />
+      <div class="title">
+        <h1 data-i18n="title">PointLog</h1>
+        <div class="sub" data-i18n="tagline">テニスの試合を “素早く” 記録し、パターンを可視化。</div>
+      </div>
+      <nav class="lang" aria-label="Language">
+        <button data-lang="ja" class="active">日本語</button>
+        <button data-lang="en">English</button>
+      </nav>
+    </header>
 
+    <section class="hero card">
+      <div>
+        <p class="lead" data-i18n="lead">
+          サーブ/リターン/ラリーの成否をワンタップで記録。試合後にショット傾向、得点パターン、ブレークポイントの成否などを自動でダッシュボード化します。
+        </p>
+        <div class="btns">
+          <a class="btn" href="#" id="storeBtn"><strong data-i18n="download">App Store で入手</strong></a>
+          <a class="btn" href="#privacy" data-i18n="privacyBtn">プライバシーポリシー</a>
+          <a class="btn" href="#support" data-i18n="supportBtn">サポート</a>
+        </div>
+      </div>
+      <div>
+        <div class="shots">
+          <img src="assets/img/shot-1.png" alt="Score screen (placeholder)" onerror="this.outerHTML='<div class=&quot;placeholder&quot;>assets/img/shot-1.png を追加してください</div>'" />
+          <img src="assets/img/shot-2.png" alt="Shot analytics (placeholder)" onerror="this.outerHTML='<div class=&quot;placeholder&quot;>assets/img/shot-2.png を追加してください</div>'" />
+          <img src="assets/img/shot-3.png" alt="Match summary (placeholder)" onerror="this.outerHTML='<div class=&quot;placeholder&quot;>assets/img/shot-3.png を追加してください</div>'" />
+        </div>
+        <p class="tiny muted" data-i18n="shotNote">画像はイメージです。実機の表示と異なる場合があります。</p>
+      </div>
+    </section>
 
-// 簡易 i18n
-const dict = {
-en: {
-title: "PointLog",
-tagline: "Log tennis points fast. Visualize patterns.",
-lead: "Record serve/return/rally outcomes with one tap. After the match, get an automatic dashboard of shot tendencies, scoring patterns, and key points.",
-download: "Get on the App Store",
-privacyBtn: "Privacy",
-supportBtn: "Support",
-shotNote: "Images are for illustration purposes.",
-f1h: "Faster Scoring",
-f1b: "One‑tap UI and swipes to record points → games → sets.",
-f2h: "Shot Tendencies",
-f2b: "Serve/return in-out, fore/back success rate, depth, etc.",
-f3h: "Post‑match Report",
-f3b: "Break points, momentum runs, and key points summarized.",
-howH: "How it works (quick)",
-how1: "Set the match format (e.g., 1 set with tiebreak).",
-how2: "Tap to log results for each point (serve/return/rally).",
-how3: "Check the dashboard afterward and jot insights.",
-priceH: "Pricing",
-priceB: "Free (placeholder). Subject to change.",
-privacyH: "Privacy Policy (to update)",
-privacyB: "The app does not collect personally identifiable information. Match data is stored on device and is not sent to developer servers. If you add ad/analytics SDKs, list them and purposes here.",
-supportH: "Support",
-supportB: "Questions or issues? Email <YOUR_EMAIL> with device/OS and steps to reproduce.",
-faqH: "FAQ",
-q1: "Does it sync via iCloud?",
-a1: "Not yet (example). If enabled, document the approach.",
-q2: "Can I export CSV?",
-a2: "Planned (example). Clarify sharing methods."
-}
-};
-const langBtns = document.querySelectorAll('.lang button');
-const applyLang = (lang) => {
-langBtns.forEach(b=>b.classList.toggle('active', b.dataset.lang===lang));
-const map = dict[lang]; if(!map) return;
-document.querySelectorAll('[data-i18n]').forEach(el=>{
-const key = el.dataset.i18n; if(map[key]) el.textContent = map[key];
-});
-document.documentElement.lang = lang;
-document.title = lang==='en' ? 'PointLog — Tennis Match Tracker & Analytics' : 'PointLog — テニスの試合記録 & 分析';
-const desc = document.querySelector('meta[name="description"]');
-if(desc) desc.setAttribute('content', lang==='en' ? 'PointLog helps you log tennis points fast and visualize patterns.' : 'PointLog は、テニスのスコアを素早く記録し、ショット傾向を可視化する iOS アプリです。');
-};
-langBtns.forEach(btn => btn.addEventListener('click',()=>applyLang(btn.dataset.lang)));
-</script>
+    <section class="grid">
+      <div class="card">
+        <h3 data-i18n="f1h">超速スコア入力</h3>
+        <p class="muted" data-i18n="f1b">ワンタップ UI とスワイプで、ポイント〜ゲーム〜セットまでテンポよく記録。</p>
+      </div>
+      <div class="card">
+        <h3 data-i18n="f2h">ショット傾向の可視化</h3>
+        <p class="muted" data-i18n="f2b">サーブ/リターンの入/失、フォア/バックの成功率、長短などを集計。</p>
+      </div>
+      <div class="card">
+        <h3 data-i18n="f3h">試合後レポート</h3>
+        <p class="muted" data-i18n="f3b">ブレークポイント、キーポイント、ランの流れをまとめて自己分析に。</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3 data-i18n="howH">使い方（ざっくり）</h3>
+      <ol>
+        <li data-i18n="how1">試合前にマッチ形式（例：1 セットマッチ、タイブレークあり）を設定。</li>
+        <li data-i18n="how2">ポイントごとに結果（サーブ/リターン/ラリー）をタップで記録。</li>
+        <li data-i18n="how3">終了後、ダッシュボードで傾向を確認。気づきをメモ。</li>
+      </ol>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h3 data-i18n="priceH">価格</h3>
+        <p class="muted" data-i18n="priceB">無料（予定/仮置き）。※ 変更の可能性あり</p>
+      </div>
+      <div class="card" id="privacy">
+        <h3 data-i18n="privacyH">プライバシーポリシー（要修正）</h3>
+        <p class="muted" data-i18n="privacyB">
+          本アプリは個人を特定できる情報を収集しません。試合データは端末内に保存され、開発者のサーバーへ送信しません。
+          広告 SDK・解析 SDK 等を導入する場合は、その名称と送信データの目的をここに明記してください。
+        </p>
+      </div>
+      <div class="card" id="support">
+        <h3 data-i18n="supportH">サポート</h3>
+        <p class="muted" data-i18n="supportB">
+          不具合報告/ご要望は <a href="mailto:support@example.com">support@example.com</a> まで。できればデバイス名/OS バージョン/再現手順を添えてご連絡ください。
+        </p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3 data-i18n="faqH">FAQ</h3>
+      <details>
+        <summary data-i18n="q1">データは iCloud に同期されますか？</summary>
+        <div class="muted" data-i18n="a1">未対応（例）。もし対応する場合は「オンデバイス暗号化＋iCloud Drive 同期」など方針を明記。</div>
+      </details>
+      <details>
+        <summary data-i18n="q2">CSV でエクスポートできますか？</summary>
+        <div class="muted" data-i18n="a2">対応予定（例）。メール/ファイル出力の可否を記載。</div>
+      </details>
+    </section>
+
+    <footer>
+      <div>© <span id="year"></span> PointLog</div>
+      <div class="tiny">This page is hosted on GitHub Pages.</div>
+    </footer>
+  </div>
+
+  <script>
+    // 年表示
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // 簡易 i18n
+    const dict = {
+      en: {
+        title: "PointLog",
+        tagline: "Log tennis points fast. Visualize patterns.",
+        lead: "Record serve/return/rally outcomes with one tap. After the match, get an automatic dashboard of shot tendencies, scoring patterns, and key points.",
+        download: "Get on the App Store",
+        privacyBtn: "Privacy",
+        supportBtn: "Support",
+        shotNote: "Images are for illustration purposes.",
+        f1h: "Faster Scoring",
+        f1b: "One-tap UI and swipes to record points → games → sets.",
+        f2h: "Shot Tendencies",
+        f2b: "Serve/return in-out, fore/back success rate, depth, etc.",
+        f3h: "Post-match Report",
+        f3b: "Break points, momentum runs, and key points summarized.",
+        howH: "How it works (quick)",
+        how1: "Set the match format (e.g., 1 set with tiebreak).",
+        how2: "Tap to log results for each point (serve/return/rally).",
+        how3: "Check the dashboard afterward and jot insights.",
+        priceH: "Pricing",
+        priceB: "Free (placeholder). Subject to change.",
+        privacyH: "Privacy Policy (to update)",
+        privacyB: "The app does not collect personally identifiable information. Match data is stored on device and is not sent to developer servers. If you add ad/analytics SDKs, list them and purposes here.",
+        supportH: "Support",
+        supportB: "Questions or issues? Email support@example.com with device/OS and steps to reproduce.",
+        faqH: "FAQ",
+        q1: "Does it sync via iCloud?",
+        a1: "Not yet (example). If enabled, document the approach.",
+        q2: "Can I export CSV?",
+        a2: "Planned (example). Clarify sharing methods."
+      }
+    };
+    const langBtns = document.querySelectorAll('.lang button');
+    const applyLang = (lang) => {
+      langBtns.forEach(b=>b.classList.toggle('active', b.dataset.lang===lang));
+      const map = dict[lang]; if(!map) return;
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const key = el.dataset.i18n; if(map[key]) el.textContent = map[key];
+      });
+      document.documentElement.lang = lang;
+      const title = (lang==='en')
+        ? 'PointLog — Tennis Match Tracker & Analytics'
+        : 'PointLog — テニスの試合記録 & 分析';
+      document.title = title;
+      const desc = document.querySelector('meta[name="description"]');
+      if(desc) desc.setAttribute('content',
+        lang==='en'
+        ? 'PointLog helps you log tennis points fast and visualize patterns.'
+        : 'PointLog は、テニスのスコアを素早く記録し、ショット傾向を可視化する iOS アプリです。'
+      );
+    };
+    langBtns.forEach(btn => btn.addEventListener('click',()=>applyLang(btn.dataset.lang)));
+
+    // App Store URL を後から安全に注入（角括弧は使用しない）
+    const APP_STORE_URL = '#'; // 公開後に実URLへ置換
+    document.getElementById('storeBtn').setAttribute('href', APP_STORE_URL);
+  </script>
 </body>
 </html>
